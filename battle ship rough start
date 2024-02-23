@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battleship Game</title>
+</head>
+<body>
+<h1>Battleship Game</h1>
+<div id="player-board"></div>
+<div id="opponent-board"></div>
+<div id="status"></div>
+<div id="log"></div>
+
+<script>
+// Define game state
+const boardSize = 10;
+const ships = [
+    { name: "Carrier", length: 5 },
+    { name: "Battleship", length: 4 },
+    { name: "Cruiser", length: 3 },
+    { name: "Submarine", length: 3 },
+    { name: "Destroyer", length: 2 }
+];
+let playerBoard = [];
+let opponentBoard = [];
+let currentPlayer = 'player';
+
+// Initialize boards
+function initializeBoards() {
+    for (let i = 0; i < boardSize; i++) {
+        playerBoard.push(Array(boardSize).fill(0));
+        opponentBoard.push(Array(boardSize).fill(0));
+    }
+}
+
+// Render boards
+function renderBoards() {
+    const playerBoardDiv = document.getElementById('player-board');
+    const opponentBoardDiv = document.getElementById('opponent-board');
+    playerBoardDiv.innerHTML = '';
+    opponentBoardDiv.innerHTML = '';
+
+    for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+            playerBoardDiv.innerHTML += `<div class="cell player-cell" id="player-${i}-${j}"></div>`;
+            opponentBoardDiv.innerHTML += `<div class="cell opponent-cell" id="opponent-${i}-${j}" onclick="takeShot(${i},${j})"></div>`;
+        }
+    }
+}
+
+// Take shot
+function takeShot(row, col) {
+    if (currentPlayer === 'opponent') {
+        // Handle opponent's turn
+        if (playerBoard[row][col] === 1) {
+            playerBoard[row][col] = 'H';
+            document.getElementById(`player-${row}-${col}`).classList.add('hit');
+            document.getElementById('status').innerText = 'Opponent hit your ship!';
+        } else {
+            document.getElementById(`player-${row}-${col}`).classList.add('miss');
+            document.getElementById('status').innerText = 'Opponent missed!';
+        }
+        currentPlayer = 'player';
+        renderBoards();
+    }
+}
+
+// Main function to start the game
+function startGame() {
+    initializeBoards();
+    renderBoards();
+}
+
+// Start the game when the page loads
+window.onload = startGame;
+</script>
+</body>
+</html>
